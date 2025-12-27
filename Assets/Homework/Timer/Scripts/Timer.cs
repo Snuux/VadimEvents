@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Timer
 {
-    public event Action OnStarted;
-    public event Action OnFinished;
-    public event Action OnSecondTicked;
-    public event Action OnChanged;
-    public event Action OnSetuped;
+    public event Action Started;
+    public event Action Finished;
+    public event Action<float> Changed;
+    public event Action Configured;
     
     private float _currentTime;
     private float _targetTime;
@@ -46,8 +45,8 @@ public class Timer
         _targetTime = time;
         _currentTime = _targetTime;
         
-        OnChanged?.Invoke();
-        OnSetuped?.Invoke();
+        Changed?.Invoke(_currentTime);
+        Configured?.Invoke();
     }
 
     public void Start()
@@ -59,9 +58,8 @@ public class Timer
         _isPaused = false;
         _isFinished = false;
         
-        OnStarted?.Invoke();
-        OnChanged?.Invoke();
-        OnSecondTicked?.Invoke();
+        Started?.Invoke();
+        Changed?.Invoke(0);
     }
 
     public void Stop()
@@ -71,37 +69,27 @@ public class Timer
         
         _currentTime = _targetTime;
         
-        OnChanged?.Invoke();
+        Changed?.Invoke(_targetTime);
         
         _timerCoroutine = null;
     }
 
     private IEnumerator Tick()
     {
-        float nextSecond = 1;
-        
         while (_currentTime >= 0)
         {
             if (_isPaused == false)
             {
                 _currentTime -= Time.deltaTime;
-                
-                float timeFromStart = _targetTime - _currentTime;
-
-                if (timeFromStart >= nextSecond)
-                {
-                    OnSecondTicked?.Invoke();
-                    nextSecond += 1f;
-                }
-                
-                OnChanged?.Invoke();
+                Changed?.Invoke(_currentTime);
             }
             
             yield return null;
         }
         
+        _currentTime = 0;
         _timerCoroutine = null;
-        OnFinished?.Invoke();
+        Finished?.Invoke();
         _isFinished = true;
     }
 }

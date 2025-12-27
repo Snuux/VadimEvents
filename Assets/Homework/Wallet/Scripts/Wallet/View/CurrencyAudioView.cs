@@ -17,7 +17,7 @@ public class CurrencyAudioView : MonoBehaviour
         _currency.Changed += PlayAudio;
     }
     
-    public void PlayAudio()
+    public void PlayAudio(float value)
     {
         _audioSource.pitch = Random.Range(MinPitch, MaxPitch);
         _audioSource.PlayOneShot(_audioSource.clip);

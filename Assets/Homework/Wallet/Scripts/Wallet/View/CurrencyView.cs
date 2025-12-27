@@ -13,8 +13,8 @@ public class CurrencyView : MonoBehaviour
     {
         _currency = currency;
         _currency.Changed += UpdateValueText;
-        UpdateValueText();
+        UpdateValueText(_currency.GetValue());
     }
 
-    public void UpdateValueText() => _currencyText.text = _currency.Value.ToString();
+    public void UpdateValueText(float value) => _currencyText.text = value.ToString();
 }

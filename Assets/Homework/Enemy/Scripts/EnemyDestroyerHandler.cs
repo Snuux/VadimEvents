@@ -2,41 +2,54 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyDestroyerHandler : MonoBehaviour
+public class EnemyDestroyerHandler
 {
-    private List< KeyValuePair<Entity, Func<Entity, bool>> > _entities = new();
+    private Dictionary< IEntity, List<Predicate<IEntity>> > _entities = new();
 
-    public void Update()
+    public void UpdateLogic()
     {
         foreach (var entity in GetEnemiesToDestroy())
-        {
-            DestroyEntity(entity);
-        }
+            TryDestroyEntity(entity);
     }
     
-    public List<Entity> GetEnemiesToDestroy()
+    public List<IEntity> GetEnemiesToDestroy()
     {
-        List<Entity> selectedEnemies = new List<Entity>();
+        List<IEntity> selectedEnemies = new();
 
-        foreach (var Entity in _entities)
-        {
-            if (Entity.Value(Entity.Key))
-                selectedEnemies.Add(Entity.Key);
-        }
+        foreach (var entity in _entities)
+            foreach (var predicate in entity.Value)
+                if (predicate(entity.Key))
+                    selectedEnemies.Add(entity.Key);
 
         return selectedEnemies;
     }
 
-    public void Add(Entity Entity, Func<Entity, bool> conditionToDestroy)
+    public void Add(IEntity entity, Predicate<IEntity> conditionToDestroy)
     {
-        var element = new KeyValuePair<Entity, Func<Entity, bool>>(Entity, conditionToDestroy);
-        _entities.Add(element);
+        if (_entities.TryGetValue(entity, out var predicates))
+            predicates.Add(conditionToDestroy);
+        else
+            _entities.Add(entity, new List<Predicate<IEntity>> { conditionToDestroy });
     }
 
-    public void DestroyEntity(Entity entityToDestroy)
+    public bool TryDestroyEntity(IEntity entityToDestroy)
     {
-        _entities.RemoveAll(x => x.Key == entityToDestroy);
-        
-        entityToDestroy.Destroy();
+        if (entityToDestroy is Component unityComponent)
+        {
+            UnityEngine.Object.Destroy(unityComponent.gameObject);
+            _entities.Remove(entityToDestroy);
+            return true;
+        }
+        else
+        {
+            Debug.LogError($"{entityToDestroy} doesn't implement {nameof(Component)}");
+            return false;
+        }
+    }
+
+    public void RemovePredicateFromEntity(IEntity entity, Predicate<IEntity> predicateToDestroy)
+    {
+        if (_entities.TryGetValue(entity, out var predicates))
+            predicates.Remove(predicateToDestroy);
     }
 }

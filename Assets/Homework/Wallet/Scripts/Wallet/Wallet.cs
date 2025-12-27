@@ -4,15 +4,46 @@ using System.Collections.Generic;
 public class Wallet
 {
     private Dictionary<CurrencyType, Currency> _currencies = new();
+    
+    public IEnumerable<Currency> Currencies => _currencies.Values;
 
-    public void AddCurrency(CurrencyType currencyType) => _currencies.Add(currencyType, new Currency());
+    public void AddValue(CurrencyType currencyType, float value)
+    {
+        if (_currencies.ContainsKey(currencyType) == false)
+            _currencies.Add(currencyType, new Currency());
 
-    public void SetValue(CurrencyType currencyType, int value) => _currencies[currencyType].Value = value;
+        _currencies[currencyType].AddValue(value);
+    }
+    
+    public void SubValue(CurrencyType currencyType, float value)
+    {
+        if (_currencies.ContainsKey(currencyType) == false)
+            _currencies.Add(currencyType, new Currency());
 
-    public void AddValue(CurrencyType currencyType, int value) =>
-        SetValue(currencyType, _currencies[currencyType].Value += value);
+        _currencies[currencyType].SubValue(value);
+    }
 
-    public int GetValue(CurrencyType currencyType) => _currencies[currencyType].Value;
+    public bool TryGetValue(CurrencyType currencyType, out float value)
+    {
+        value = 0f;
+        
+        if (_currencies.ContainsKey(currencyType) == false)
+            return false;
+        
+        value = _currencies[currencyType].GetValue();
+        
+        return true;
+    }
 
-    public Currency GetCurrency(CurrencyType currencyType) => _currencies[currencyType];
+    public bool TryGetCurrency(CurrencyType currencyType, out  Currency currency)
+    {
+        currency = null;
+
+        if (_currencies.ContainsKey(currencyType) == false)
+            return false;
+        
+        currency = _currencies[currencyType];
+        
+        return true;
+    }
 }

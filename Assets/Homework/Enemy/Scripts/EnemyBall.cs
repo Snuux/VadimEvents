@@ -1,51 +1,61 @@
-﻿using UnityEngine;
+﻿using System;
+using TMPro;
+using UnityEngine;
 
-public class EnemyBall : MonoBehaviour, Entity
+public class EnemyBall : MonoBehaviour, IEntity
 {
-    private Timer _timerToDestroy;
-    
     [field: SerializeField] public float Health { get; set; }
-    [field: SerializeField] public float Size { get; set; }
+    [field: SerializeField] public float LifeTime { get; set; }
     [field: SerializeField] public EntityType EntityType { get; set;  }
     
-    public void Initialize(float health, EntityType type, float size)
+    private Timer _timerToDestroy;
+    private TMP_Text _timerText;
+
+    private void Awake()
     {
-        Health = health;
-        Size = size;
-        EntityType = type;
-        
-        float timerTimeFromSize = Size;
-        _timerToDestroy = new Timer(this, timerTimeFromSize);
-        _timerToDestroy.Start();
-
-        UpdateSize();
-        
-        _timerToDestroy.OnChanged += UpdateSize;
+        _timerText = GetComponentInChildren<TMP_Text>();
     }
-    
-    public bool IsDead() => Health <= 0;
-
-    public string GetInfo() => $"Health: {Health},  Size: {Size},  Type: {EntityType.ToString()}";
 
     private void OnMouseUpAsButton()
     {
         Health -= 1000;
     }
+    
+    public void Initialize(float health, EntityType type, float lifeTime)
+    {
+        Health = health;
+        LifeTime = lifeTime;
+        EntityType = type;
+        
+        _timerToDestroy = new Timer(this, lifeTime);
+        _timerToDestroy.Start();
+        
+        _timerToDestroy.Changed += UpdateLifeTime;
+        _timerToDestroy.Changed += UpdateInfoText;
+    }
+
+    private void UpdateLifeTime(float time)
+    {
+        LifeTime = time;
+    }
 
     private void OnDestroy()
     {
-        _timerToDestroy.OnChanged -= UpdateSize;
+        _timerToDestroy.Changed -= UpdateInfoText;
+        _timerToDestroy.Changed -= UpdateLifeTime;
     }
 
-    private void UpdateSize()
+    private void UpdateInfoText(float time)
     {
-        Size = _timerToDestroy.CurrentTime;
-        
-        transform.localScale = Vector3.one * Size;
+        if (_timerText != null)
+        {
+            float resultTime = Mathf.Clamp(time + .02f, 0, float.MaxValue);
+            _timerText.text = resultTime.ToString("F1");
+        }
     }
     
     public void Destroy()
-    {
+    { 
         Destroy(gameObject);
     }
 }

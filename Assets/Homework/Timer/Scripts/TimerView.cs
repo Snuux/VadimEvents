@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 class TimerView : MonoBehaviour
 {
-    [SerializeField] private TimerPlayer _player;
-    
     [SerializeField] private Canvas _canvas;
     
     [SerializeField] private RectTransform _parentPanelPrefab;
@@ -36,8 +34,10 @@ class TimerView : MonoBehaviour
     private TMP_Text _textMaxTime;
     private TMP_Text _textTime;
 
-    private void Start()
+    public void Initialize(Timer timer)
     {
+        _timer = timer;
+        
         RectTransform parentPanel = Instantiate(_parentPanelPrefab, _canvas.transform); 
         _slider = Instantiate(_sliderPrefab, parentPanel);
         
@@ -51,24 +51,17 @@ class TimerView : MonoBehaviour
         _buttonStop = Instantiate(_buttonStopPrefab,  buttonsPanel);
         _buttonPause = Instantiate(_buttonPausePrefab,  buttonsPanel);
         _buttonContinue = Instantiate(_buttonContinuePrefab,  buttonsPanel);
-        
-        _timer = _player.GetTimer();
 
         _buttonStart.onClick.AddListener(StartTimer);
         _buttonStop.onClick.AddListener(StopTimer);
         _buttonPause.onClick.AddListener(PauseTimer);
         _buttonContinue.onClick.AddListener(ResumeTimer);
 
-        _timer.OnChanged += UpdateSlider;
-        _timer.OnChanged += UpdateTimeText;
-        _timer.OnSecondTicked += UpdateHearts;
-        _timer.OnSetuped += UpdateMaxTimeText;
-        _timer.OnFinished += UpdateMaxTimeTextFinished;
-
-        UpdateTimeText();
-        UpdateMaxTimeText();
-        UpdateSlider();
-        UpdateHearts();
+        _timer.Changed += UpdateSlider;
+        _timer.Changed += UpdateTimeText;
+        _timer.Changed += UpdateHearts;
+        _timer.Configured += UpdateMaxTimeText;
+        _timer.Finished += UpdateMaxTimeTextFinished;
     }
 
     private void OnDestroy()
@@ -78,24 +71,24 @@ class TimerView : MonoBehaviour
         _buttonPause.onClick.RemoveAllListeners();
         _buttonContinue.onClick.RemoveAllListeners();
         
-        _timer.OnChanged -= UpdateSlider;
-        _timer.OnChanged -= UpdateTimeText;
-        _timer.OnSecondTicked -= UpdateHearts;
-        _timer.OnSetuped -= UpdateMaxTimeText;
-        _timer.OnFinished -= UpdateMaxTimeTextFinished;
+        _timer.Changed -= UpdateSlider;
+        _timer.Changed -= UpdateTimeText;
+        _timer.Changed -= UpdateHearts;
+        _timer.Configured -= UpdateMaxTimeText;
+        _timer.Finished -= UpdateMaxTimeTextFinished;
     }
 
-    private void UpdateTimeText() => _textTime.text =  Mathf.FloorToInt(_timer.CurrentTime) + " sec";
+    private void UpdateTimeText(float currentTime) => _textTime.text =  Mathf.FloorToInt(currentTime) + " sec";
 
     private void UpdateMaxTimeText() => _textMaxTime.text = "Timer: " + _timer.TargetTime.ToString("00") + " sec";
     
     private void UpdateMaxTimeTextFinished() => _textMaxTime.text = "Yeah, timer Finished!!!";
 
-    private void UpdateSlider() => _slider.value = _timer.CurrentTime / _timer.TargetTime;
+    private void UpdateSlider(float currentTime) => _slider.value = currentTime / _timer.TargetTime;
 
-    private void UpdateHearts()
+    private void UpdateHearts(float currentTime)
     {
-        int secondsCount = Mathf.FloorToInt(_timer.CurrentTime);
+        int secondsCount = Mathf.FloorToInt(currentTime);
         
         for (int i = 0; i < _heartFillArea.childCount; i++)
             Destroy(_heartFillArea.GetChild(i).gameObject);

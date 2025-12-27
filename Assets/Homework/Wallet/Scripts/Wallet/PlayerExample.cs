@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerExample : MonoBehaviour
 {
+    [SerializeField] private WalletView _walletView;
+    
     private Wallet _playerWallet;
 
     public Wallet PlayerWallet => _playerWallet;
@@ -10,22 +12,20 @@ public class PlayerExample : MonoBehaviour
     {
         _playerWallet = new Wallet();
 
-        _playerWallet.AddCurrency(CurrencyType.Coins);
-        _playerWallet.AddCurrency(CurrencyType.PremiumCoins);
-        _playerWallet.AddCurrency(CurrencyType.Energy);
-
-        _playerWallet.SetValue(CurrencyType.Coins, 0);
-        _playerWallet.SetValue(CurrencyType.PremiumCoins, 0);
-        _playerWallet.SetValue(CurrencyType.Energy, 100);
+        _playerWallet.AddValue(CurrencyType.Coins, 0);
+        _playerWallet.AddValue(CurrencyType.PremiumCoins, 0);
+        _playerWallet.AddValue(CurrencyType.Energy, 100);
+        
+        _walletView.Initialize(_playerWallet);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKey(KeyCode.Alpha1))
             _playerWallet.AddValue(CurrencyType.Coins, 1);
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKey(KeyCode.Alpha2))
             _playerWallet.AddValue(CurrencyType.PremiumCoins, 1);
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            _playerWallet.AddValue(CurrencyType.Energy, -1);
+        if (Input.GetKey(KeyCode.Alpha3))
+            _playerWallet.SubValue(CurrencyType.Energy, 1);
     }
 }

@@ -347,7 +347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4021bad698ee416e961e46d6bc0df51f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 1361855884}
   _canvas: {fileID: 147459754}
   _parentPanelPrefab: {fileID: 6479670962493903388, guid: 6741753b8e1fe274f97962485f226557, type: 3}
   _sliderPrefab: {fileID: 2702899369129669184, guid: 2583710789beac14599fb9dcb1464732, type: 3}
@@ -496,6 +495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958753390bb44dcfafcdffb6d88fceb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timerView: {fileID: 718117958}
 --- !u!4 &1361855885
 Transform:
   m_ObjectHideFlags: 0

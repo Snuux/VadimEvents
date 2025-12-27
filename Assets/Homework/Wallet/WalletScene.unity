@@ -253,14 +253,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2851ed3e975e4ae3b1ec3d8ecd44718a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currencyViewData:
+  - ViewPrefab: {fileID: 4606306939110162735, guid: 74722ebdf2c040c4cb5b5758db596b16, type: 3}
+    CurrencyType: 0
+  - ViewPrefab: {fileID: 2827209845096655058, guid: eb5f7d3abdb2a6f498b42bc78f2f539c, type: 3}
+    CurrencyType: 1
+  - ViewPrefab: {fileID: -1303923177145133302, guid: 76d66fc21dcaefd45942df142b37d1cb, type: 3}
+    CurrencyType: 2
   _canvas: {fileID: 147459754}
   _walletViewPrefab: {fileID: 4382827639824692546, guid: 6115274200ff24447a1354469e633feb, type: 3}
   _currenciesPanel: {fileID: 2810264768482303385, guid: 0c2c628629faeb64480860c77aeaae83, type: 3}
-  _coinsViewPrefab: {fileID: 4606306939110162735, guid: 74722ebdf2c040c4cb5b5758db596b16, type: 3}
-  _coinsPremiumViewPrefab: {fileID: 2827209845096655058, guid: eb5f7d3abdb2a6f498b42bc78f2f539c, type: 3}
-  _energyViewPrefab: {fileID: -1303923177145133302, guid: 76d66fc21dcaefd45942df142b37d1cb, type: 3}
   _walletAudioView: {fileID: 1854524647}
-  _playerExample: {fileID: 1801999882}
 --- !u!4 &581093157
 Transform:
   m_ObjectHideFlags: 0
@@ -560,6 +563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e3ee07a4366d240bafe55d5e843f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _walletView: {fileID: 581093156}
 --- !u!4 &1801999883
 Transform:
   m_ObjectHideFlags: 0
