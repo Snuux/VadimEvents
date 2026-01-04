@@ -11,7 +11,7 @@ public class WalletView : MonoBehaviour
         public CurrencyType CurrencyType;
     }
     
-    [SerializeField] List<CurrencyViewData> _currencyViewData;
+    [SerializeField] List<CurrencyViewData> _currencyViewDataList;
     
     [SerializeField] private Canvas _canvas;
     
@@ -21,7 +21,6 @@ public class WalletView : MonoBehaviour
     [SerializeField] private CurrencyAudioView _walletAudioView;
 
     private Wallet _wallet;
-    
 
     public void Initialize(Wallet wallet)
     {
@@ -30,14 +29,19 @@ public class WalletView : MonoBehaviour
         RectTransform walletPanel = Instantiate(_walletViewPrefab, _canvas.transform);
         RectTransform currenciesPanel = Instantiate(_currenciesPanel, walletPanel.transform);
         
-        foreach (var currencyViewData in _currencyViewData)
+        foreach (var currency in _wallet.Currencies)
         {
-            CurrencyView view = Instantiate(currencyViewData.ViewPrefab, currenciesPanel.transform);
-            
-            Currency currency = GetCoinCurrency(currencyViewData.CurrencyType);
-            
-            view.Initialize(currency);
-            _walletAudioView.Initialize(currency);
+            if (TryFindMappedCurrency(currency.Key, out CurrencyViewData viewData))
+            {
+                CurrencyView view = Instantiate(viewData.ViewPrefab, currenciesPanel.transform);
+                Currency currentCurrency = GetCoinCurrency(viewData.CurrencyType);
+                view.Initialize(currentCurrency);
+                _walletAudioView.Initialize(currentCurrency);
+            }
+            else
+            {
+                throw new Exception($"For Currency \"{currency.Key}\" not found DataView");
+            }
         }
     }
 
@@ -47,5 +51,20 @@ public class WalletView : MonoBehaviour
             Debug.LogError($"Coin Currency {currencyType} not found");
         
         return currency;
+    }
+
+    private bool TryFindMappedCurrency(CurrencyType currencyType, out CurrencyViewData viewData)
+    {
+        foreach (var currencyViewData in _currencyViewDataList)
+        {
+            if (currencyType == currencyViewData.CurrencyType)
+            {
+                viewData = currencyViewData;
+                return true;
+            }
+        }
+        
+        viewData = null;
+        return false;
     }
 }

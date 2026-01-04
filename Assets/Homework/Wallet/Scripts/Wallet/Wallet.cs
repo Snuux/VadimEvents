@@ -5,7 +5,9 @@ public class Wallet
 {
     private Dictionary<CurrencyType, Currency> _currencies = new();
     
-    public IEnumerable<Currency> Currencies => _currencies.Values;
+    public Dictionary<CurrencyType, Currency> Currencies => _currencies;
+    
+    //public IEnumerable<Currency> Currencies => _currencies.Values;
 
     public void AddValue(CurrencyType currencyType, float value)
     {
@@ -30,7 +32,7 @@ public class Wallet
         if (_currencies.ContainsKey(currencyType) == false)
             return false;
         
-        value = _currencies[currencyType].GetValue();
+        value = _currencies[currencyType].ReactiveValue.Value;
         
         return true;
     }

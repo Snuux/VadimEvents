@@ -9,15 +9,15 @@ public class CurrencyAudioView : MonoBehaviour
 
     private Currency _currency;
 
-    private void OnDestroy() => _currency.Changed -= PlayAudio;
+    private void OnDestroy() => _currency.ReactiveValue.Changed -= PlayAudio;
     
     public void Initialize(Currency currency)
     {
         _currency = currency;
-        _currency.Changed += PlayAudio;
+        _currency.ReactiveValue.Changed += PlayAudio;
     }
     
-    public void PlayAudio(float value)
+    public void PlayAudio(float oldValue, float value)
     {
         _audioSource.pitch = Random.Range(MinPitch, MaxPitch);
         _audioSource.PlayOneShot(_audioSource.clip);

@@ -30,6 +30,4 @@ class TimerPlayer : MonoBehaviour
             _timer.Start();
         }
     }
-
-    public Timer GetTimer() => _timer;
 }

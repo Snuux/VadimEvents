@@ -6,28 +6,29 @@ public class Timer
 {
     public event Action Started;
     public event Action Finished;
-    public event Action<float> Changed;
     public event Action Configured;
     
-    private float _currentTime;
-    private float _targetTime;
+    private ReactiveVariable<float> _currentTime;
+    private ReactiveVariable<float> _targetTime;
+    
     private bool _isPaused;
     private bool _isFinished;
     
     private readonly MonoBehaviour _parent;
     private Coroutine _timerCoroutine;
 
-    public Timer(MonoBehaviour parent, float currentTime = 0)
+    public Timer(MonoBehaviour parent, float maxTime = 0)
     {
         _parent = parent;
-        _currentTime = currentTime;
+        
+        _currentTime = new ReactiveVariable<float>(maxTime);
+        _targetTime = new ReactiveVariable<float>(maxTime);
     }
 
-    public float CurrentTime => _currentTime;
-    public float TargetTime => _targetTime;
+    public ReactiveVariable<float> ReactiveCurrentTime => _currentTime;
+    public ReactiveVariable<float> ReactiveTargetTime => _targetTime;
     
     public bool IsRunning => _timerCoroutine != null;
-    public bool IsPaused => _isPaused;
     public bool IsFinished => _isFinished;
 
     public void Pause() => _isPaused = true;
@@ -41,11 +42,10 @@ public class Timer
             Stop();
             return;
         }
+
+        _targetTime.Value = time;
+        _currentTime.Value = _targetTime.Value;
         
-        _targetTime = time;
-        _currentTime = _targetTime;
-        
-        Changed?.Invoke(_currentTime);
         Configured?.Invoke();
     }
 
@@ -59,7 +59,6 @@ public class Timer
         _isFinished = false;
         
         Started?.Invoke();
-        Changed?.Invoke(0);
     }
 
     public void Stop()
@@ -67,27 +66,21 @@ public class Timer
         if (_timerCoroutine != null)
             _parent.StopCoroutine(_timerCoroutine);
         
-        _currentTime = _targetTime;
-        
-        Changed?.Invoke(_targetTime);
-        
+        _currentTime.Value = _targetTime.Value;
         _timerCoroutine = null;
     }
 
     private IEnumerator Tick()
     {
-        while (_currentTime >= 0)
+        while (_currentTime.Value >= 0)
         {
             if (_isPaused == false)
-            {
-                _currentTime -= Time.deltaTime;
-                Changed?.Invoke(_currentTime);
-            }
+                _currentTime.Value -= Time.deltaTime;
             
             yield return null;
         }
         
-        _currentTime = 0;
+        _currentTime.Value = 0;
         _timerCoroutine = null;
         Finished?.Invoke();
         _isFinished = true;

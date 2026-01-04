@@ -3,63 +3,42 @@ using UnityEngine;
 
 public class Currency
 {
-    public event Action<float> Changed;
+    private ReactiveVariable<float> _value;
 
-    private float _value;
+    public Currency(float value = 0) => _value = new ReactiveVariable<float>(value);
+
+    public ReactiveVariable<float> ReactiveValue => _value;
     
     public float SetValue(float value)
     {
-        if (value <= 0)
-        {;  
-            Debug.Log("value is invalid");
-            Debug.Break();
-                
-            return -1;
-        }
-        
-        _value = value;
-        Changed?.Invoke(_value);
-        
-        return _value;
+        ThrowExceptionIfValueNotPositive(value);
+        _value.Value = value;
+        return _value.Value;
     }
-    
+
     public float AddValue(float value)
     {
-        if (value < 0)
-        {;  
-            Debug.LogError("value is invalid");
-            return -1;
-        }
-        
-        _value += value;
-        Changed?.Invoke(_value);
-        
-        return _value;
+        ThrowExceptionIfValueNotPositive(value);
+        _value.Value += value;
+        return _value.Value;
     }
 
     public float SubValue(float value)
     {
-        if (value < 0)
-        {;  
-            Debug.LogError("value is invalid");
-            return -1;
-        }
+        ThrowExceptionIfValueNotPositive(value);
+        float newValue = _value.Value - value;
         
-        _value -= value;
-
-        if (_value < 0)
-        {
-            _value = 0;
-            Debug.LogError("value < 0");
-            return _value;
-        }
+        if (newValue < 0)
+            _value.Value = 0;
+        else
+            _value.Value = newValue;
         
-        Changed?.Invoke(_value);
-        
-        return _value;
+        return _value.Value;
     }
-    
-    public float GetValue() => _value;
 
-    public Currency(float value = 0) => _value = value;
+    private void ThrowExceptionIfValueNotPositive(float value)
+    {
+        if (value < 0)
+            throw new Exception($"value is invalid { value } < 0");
+    }
 }

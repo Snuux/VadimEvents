@@ -57,9 +57,10 @@ class TimerView : MonoBehaviour
         _buttonPause.onClick.AddListener(PauseTimer);
         _buttonContinue.onClick.AddListener(ResumeTimer);
 
-        _timer.Changed += UpdateSlider;
-        _timer.Changed += UpdateTimeText;
-        _timer.Changed += UpdateHearts;
+        _timer.ReactiveCurrentTime.Changed += UpdateSlider;
+        _timer.ReactiveCurrentTime.Changed += UpdateTimeText;
+        _timer.ReactiveCurrentTime.Changed += UpdateHearts;
+        
         _timer.Configured += UpdateMaxTimeText;
         _timer.Finished += UpdateMaxTimeTextFinished;
     }
@@ -71,22 +72,23 @@ class TimerView : MonoBehaviour
         _buttonPause.onClick.RemoveAllListeners();
         _buttonContinue.onClick.RemoveAllListeners();
         
-        _timer.Changed -= UpdateSlider;
-        _timer.Changed -= UpdateTimeText;
-        _timer.Changed -= UpdateHearts;
+        _timer.ReactiveCurrentTime.Changed -= UpdateSlider;
+        _timer.ReactiveCurrentTime.Changed -= UpdateTimeText;
+        _timer.ReactiveCurrentTime.Changed -= UpdateHearts;
+        
         _timer.Configured -= UpdateMaxTimeText;
         _timer.Finished -= UpdateMaxTimeTextFinished;
     }
 
-    private void UpdateTimeText(float currentTime) => _textTime.text =  Mathf.FloorToInt(currentTime) + " sec";
+    private void UpdateTimeText(float oldTime, float currentTime) => _textTime.text =  Mathf.FloorToInt(currentTime) + " sec";
 
-    private void UpdateMaxTimeText() => _textMaxTime.text = "Timer: " + _timer.TargetTime.ToString("00") + " sec";
+    private void UpdateMaxTimeText() => _textMaxTime.text = "Timer: " + _timer.ReactiveTargetTime.Value.ToString("00") + " sec";
     
     private void UpdateMaxTimeTextFinished() => _textMaxTime.text = "Yeah, timer Finished!!!";
 
-    private void UpdateSlider(float currentTime) => _slider.value = currentTime / _timer.TargetTime;
+    private void UpdateSlider(float oldTime, float currentTime) => _slider.value = currentTime / _timer.ReactiveTargetTime.Value;
 
-    private void UpdateHearts(float currentTime)
+    private void UpdateHearts(float oldTime, float currentTime)
     {
         int secondsCount = Mathf.FloorToInt(currentTime);
         

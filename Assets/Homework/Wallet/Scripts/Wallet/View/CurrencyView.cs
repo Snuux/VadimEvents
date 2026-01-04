@@ -7,14 +7,18 @@ public class CurrencyView : MonoBehaviour
 
     private Currency _currency;
 
-    private void OnDestroy() => _currency.Changed -= UpdateValueText;
+    private void OnDestroy()
+    {
+        _currency.ReactiveValue.Changed -= UpdateValueText;
+    }
 
     public void Initialize(Currency currency)
     {
         _currency = currency;
-        _currency.Changed += UpdateValueText;
-        UpdateValueText(_currency.GetValue());
+        _currency.ReactiveValue.Changed += UpdateValueText;
+        
+        UpdateValueText(_currency.ReactiveValue.Value, _currency.ReactiveValue.Value);
     }
 
-    public void UpdateValueText(float value) => _currencyText.text = value.ToString();
+    public void UpdateValueText(float oldValue, float value) => _currencyText.text = value.ToString();
 }
