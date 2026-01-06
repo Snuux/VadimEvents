@@ -1,11 +1,14 @@
 ﻿using System;
 
-public class Item : IEquatable<Item>
+namespace Homework.Inventory.Scripts.Inventory
 {
-    public Item(string name) => Name = name;
+    public class Item : IEquatable<Item>
+    {
+        public Item(string name) => Name = name;
 
-    public string Name { get; }
+        public string Name { get; }
 
-    public bool Equals(Item other) => Name.Equals(other?.Name);
-    public bool Equals(string otherName) => Name.Equals(otherName);
+        public bool Equals(Item other) => Name.Equals(other?.Name);
+        public bool Equals(string otherName) => Name.Equals(otherName);
+    }
 }

@@ -1,6 +1,9 @@
-﻿public enum EntityType
+﻿namespace Homework.Enemy.Scripts
 {
-    Red,
-    Blue,
-    Yellow
+    public enum EntityType
+    {
+        Red,
+        Blue,
+        Yellow
+    }
 }

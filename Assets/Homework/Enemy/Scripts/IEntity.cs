@@ -1,6 +1,9 @@
-﻿public interface IEntity
+﻿namespace Homework.Enemy.Scripts
 {
-    float Health { get; set; }
-    float LifeTime { get; set; }
-    EntityType EntityType { get; set; }
+    public interface IEntity
+    {
+        float Health { get; set; }
+        float LifeTime { get; set; }
+        EntityType EntityType { get; set; }
+    }
 }

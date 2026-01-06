@@ -1,58 +1,61 @@
 ﻿using System;
 
-public class Slot<T> : IEquatable<T>
+namespace Homework.Inventory.Scripts.Inventory
 {
-    private int _count;
-
-    public Slot(T item, int count = 1)
+    public class Slot<T> : IEquatable<T>
     {
-        Count = count;
-        Item = item;
-    }
+        private int _count;
 
-    public T Item { get; private set; }
-
-    public int Count
-    {
-        get => _count;
-        private set
+        public Slot(T item, int count = 1)
         {
-            _count = value;
+            Count = count;
+            Item = item;
+        }
+
+        public T Item { get; private set; }
+
+        public int Count
+        {
+            get => _count;
+            private set
+            {
+                _count = value;
             
-            if (_count < 0)
-            {
-                Count = 0;
-                Item = default;
-            }
-            else if (Count == 0)
-            {
-                Item = default;
+                if (_count < 0)
+                {
+                    Count = 0;
+                    Item = default;
+                }
+                else if (Count == 0)
+                {
+                    Item = default;
+                }
             }
         }
-    }
 
-    public bool IsEmpty => Count == 0;
+        public bool IsEmpty => Count == 0;
 
-    public void Clear() => Count = 0;
+        public void Clear() => Count = 0;
 
-    public void Add(int count = 1)
-    {
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        public void Add(int count = 1)
+        {
+            if (count <= 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
         
-        Count += count;
-    }
+            Count += count;
+        }
 
-    public int Get(int count = 1)
-    {
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        public int Get(int count = 1)
+        {
+            if (count <= 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
         
-        int removed = Math.Min(Count, count);
-        Count -= removed;
+            int removed = Math.Min(Count, count);
+            Count -= removed;
         
-        return removed;
-    }
+            return removed;
+        }
 
-    public bool Equals(T other) => other != null && other.Equals(Item);
+        public bool Equals(T other) => other != null && other.Equals(Item);
+    }
 }

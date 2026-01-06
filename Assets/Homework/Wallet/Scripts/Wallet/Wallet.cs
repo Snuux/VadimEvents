@@ -1,51 +1,52 @@
-using System;
 using System.Collections.Generic;
 
-public class Wallet
+namespace Homework.Wallet.Scripts.Wallet
 {
-    private Dictionary<CurrencyType, Currency> _currencies = new();
+    public class Wallet
+    {
+        private Dictionary<CurrencyType, Currency> _currencies = new();
     
-    public Dictionary<CurrencyType, Currency> Currencies => _currencies;
+        public IReadOnlyDictionary<CurrencyType, Currency> Currencies => _currencies;
+
+        public void AddValue(CurrencyType currencyType, float value)
+        {
+            if (_currencies.ContainsKey(currencyType) == false)
+                _currencies.Add(currencyType, new Currency());
+
+            _currencies[currencyType].AddValue(value);
+        }
     
-    //public IEnumerable<Currency> Currencies => _currencies.Values;
+        public bool TrySubValue(CurrencyType currencyType, float value)
+        {
+            if (_currencies.ContainsKey(currencyType) == false)
+                return false;
 
-    public void AddValue(CurrencyType currencyType, float value)
-    {
-        if (_currencies.ContainsKey(currencyType) == false)
-            _currencies.Add(currencyType, new Currency());
+            _currencies[currencyType].SubValue(value);
+            return true;
+        }
 
-        _currencies[currencyType].AddValue(value);
-    }
-    
-    public void SubValue(CurrencyType currencyType, float value)
-    {
-        if (_currencies.ContainsKey(currencyType) == false)
-            _currencies.Add(currencyType, new Currency());
+        public bool TryGetValue(CurrencyType currencyType, out float value)
+        {
+            if (TryGetCurrency(currencyType, out Currency currency) == false)
+            {
+                value = 0;
+                return false;
+            }
+            
+            value = currency.ReactiveValue.Value;
+            return true;
+        }
 
-        _currencies[currencyType].SubValue(value);
-    }
+        public bool TryGetCurrency(CurrencyType currencyType, out Currency currency)
+        {
+            currency = null;
 
-    public bool TryGetValue(CurrencyType currencyType, out float value)
-    {
-        value = 0f;
+            if (_currencies.ContainsKey(currencyType) == false)
+                return false;
         
-        if (_currencies.ContainsKey(currencyType) == false)
-            return false;
+            currency = _currencies[currencyType];
         
-        value = _currencies[currencyType].ReactiveValue.Value;
-        
-        return true;
-    }
-
-    public bool TryGetCurrency(CurrencyType currencyType, out  Currency currency)
-    {
-        currency = null;
-
-        if (_currencies.ContainsKey(currencyType) == false)
-            return false;
-        
-        currency = _currencies[currencyType];
-        
-        return true;
+            return true;
+        }
     }
 }

@@ -1,11 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class DragonSettings
+namespace Homework.Creatures.Scripts.Creatures
 {
-    [field: SerializeField] public float Damage { get; private set; }
-    [field: SerializeField] public float Health { get; private set; }
-    [field: SerializeField] public float FireCapacity { get; private set; }
-    [field: SerializeField] public int HeadsCount { get; private set; }
+    [Serializable]
+    public class DragonSettings : CreatureSettings
+    {
+        [field: SerializeField] public float Damage { get; private set; }
+        [field: SerializeField] public float Health { get; private set; }
+        [field: SerializeField] public float FireCapacity { get; private set; }
+        [field: SerializeField] public int HeadsCount { get; private set; }
+    }
 }

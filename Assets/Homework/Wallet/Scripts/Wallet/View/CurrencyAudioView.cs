@@ -1,25 +1,28 @@
 ﻿using UnityEngine;
 
-public class CurrencyAudioView : MonoBehaviour
+namespace Homework.Wallet.Scripts.Wallet.View
 {
-    public const float MinPitch = 0.8f;
-    public const float MaxPitch = 1.2f;
-    
-    [SerializeField] private AudioSource _audioSource;
-
-    private Currency _currency;
-
-    private void OnDestroy() => _currency.ReactiveValue.Changed -= PlayAudio;
-    
-    public void Initialize(Currency currency)
+    public class CurrencyAudioView : MonoBehaviour
     {
-        _currency = currency;
-        _currency.ReactiveValue.Changed += PlayAudio;
-    }
+        public const float MinPitch = 0.8f;
+        public const float MaxPitch = 1.2f;
     
-    public void PlayAudio(float oldValue, float value)
-    {
-        _audioSource.pitch = Random.Range(MinPitch, MaxPitch);
-        _audioSource.PlayOneShot(_audioSource.clip);
+        [SerializeField] private AudioSource _audioSource;
+
+        private Currency _currency;
+
+        private void OnDestroy() => _currency.Changed -= PlayAudio;
+    
+        public void Initialize(Currency currency)
+        {
+            _currency = currency;
+            _currency.Changed += PlayAudio;
+        }
+    
+        public void PlayAudio(float oldValue, float value)
+        {
+            _audioSource.pitch = Random.Range(MinPitch, MaxPitch);
+            _audioSource.PlayOneShot(_audioSource.clip);
+        }
     }
 }

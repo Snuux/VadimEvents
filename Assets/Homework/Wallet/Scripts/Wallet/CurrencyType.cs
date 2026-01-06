@@ -1,6 +1,9 @@
-public enum CurrencyType
+namespace Homework.Wallet.Scripts.Wallet
 {
-    Coins,
-    PremiumCoins,
-    Energy
+    public enum CurrencyType
+    {
+        Coins,
+        PremiumCoins,
+        Energy
+    }
 }

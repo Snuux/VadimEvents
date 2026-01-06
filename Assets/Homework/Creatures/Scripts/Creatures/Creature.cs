@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public abstract class Creature : MonoBehaviour
+namespace Homework.Creatures.Scripts.Creatures
 {
-    public float Damage { get; protected set; }
-    public float Health { get; protected set; }
-
-    public override string ToString() => $"Наносит {Damage} урона. У него {Health} здоровья.";
+    public abstract class Creature : MonoBehaviour
+    {
+        public float Damage { get; protected set; }
+        public float Health { get; protected set; }
+    
+        public override string ToString() => $"Наносит {Damage} урона. У него {Health} здоровья.";
+    }
 }

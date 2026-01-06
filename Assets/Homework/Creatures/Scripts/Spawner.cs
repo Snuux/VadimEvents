@@ -1,40 +1,74 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Homework.Creatures.Scripts.Creatures;
 
-public class Spawner
+namespace Homework.Creatures.Scripts
 {
-    private List<Creature> _allCreatures = new();
-    
-    public IReadOnlyList<Creature> AllCreatures => _allCreatures;
-    
-    public void Spawn(Creature creature, object settings)
+    public class Spawner
     {
-        Creature spawnedCreature = Object.Instantiate(creature);
+        private readonly List<Creature> _allCreatures = new();
 
-        if (spawnedCreature == null)
-            return;
+        private readonly Ork _orkPrefab;
+        private readonly Elf _elfPrefab;
+        private readonly Dragon _dragonPrefab;
+
+        public Spawner(Ork ork, Elf elf, Dragon dragon)
+        {
+            _orkPrefab = ork;
+            _elfPrefab = elf;
+            _dragonPrefab = dragon;
+        }
         
-        _allCreatures.Add(spawnedCreature);
-        
-        if (settings is DragonSettings dragonSetting)
+        public IReadOnlyList<Creature> AllCreatures => _allCreatures;
+
+        public void Spawn(CreatureSettings settings)
         {
-            Dragon dragon = spawnedCreature as Dragon;
-            dragon?.Initialize(
-                dragonSetting.Damage, dragonSetting.Health, dragonSetting.FireCapacity, dragonSetting.HeadsCount);
-        }
-        else if (settings is ElfSettings elfSettings)
-        {
-            Elf elf = spawnedCreature as Elf;
-            elf?.Initialize(elfSettings.Damage, elfSettings.Health, elfSettings.Mana, elfSettings.Wisdom);
-        }
-        else if (settings is OrkSettings orkSettings)
-        {
-            Ork ork = spawnedCreature as Ork;
-            ork?.Initialize(orkSettings.Damage, orkSettings.Health, orkSettings.HasAxe, orkSettings.Strength);
-        }
-        else
-        {
-            throw new System.NotImplementedException("No setting for " + settings.GetType().Name);
+            switch (settings)
+            {
+                case DragonSettings dragonSetting:
+                {
+                    Dragon dragonInstance = Object.Instantiate(_dragonPrefab);
+
+                    if (dragonInstance == null)
+                        throw new System.NullReferenceException("DragonInstance is null");
+
+                    dragonInstance.Initialize(
+                        dragonSetting.Damage, dragonSetting.Health, dragonSetting.FireCapacity, dragonSetting.HeadsCount);
+
+                    _allCreatures.Add(dragonInstance);
+                    break;
+                }
+                case ElfSettings elfSettings:
+                {
+                    Elf elfInstance = Object.Instantiate(_elfPrefab);
+
+                    if (elfInstance == null)
+                        throw new System.NullReferenceException("ElfInstance is null");
+
+                    elfInstance.Initialize(
+                        elfSettings.Damage, elfSettings.Health, elfSettings.Mana, elfSettings.Wisdom);
+
+                    _allCreatures.Add(elfInstance);
+                    break;
+                }
+                case OrkSettings orkSettings:
+                {
+                    Ork orkInstance = Object.Instantiate(_orkPrefab);
+
+                    if (orkInstance == null)
+                        throw new System.NullReferenceException("OrkInstance is null");
+
+                    orkInstance.Initialize(
+                        orkSettings.Damage, orkSettings.Health, orkSettings.HasAxe, orkSettings.Strength);
+
+                    _allCreatures.Add(orkInstance);
+                    break;
+                }
+                default:
+                {
+                    throw new System.NotImplementedException("No setting for " + settings.GetType().Name);
+                }
+            }
         }
     }
 }
