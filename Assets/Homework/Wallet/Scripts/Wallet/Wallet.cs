@@ -4,16 +4,16 @@ namespace Homework.Wallet.Scripts.Wallet
 {
     public class Wallet
     {
-        private Dictionary<CurrencyType, Currency> _currencies = new();
+        private readonly Dictionary<CurrencyType, IReadOnlyCurrency> _currencies = new();
     
-        public IReadOnlyDictionary<CurrencyType, Currency> Currencies => _currencies;
+        public IReadOnlyDictionary<CurrencyType, IReadOnlyCurrency> Currencies => _currencies;
 
         public void AddValue(CurrencyType currencyType, float value)
         {
             if (_currencies.ContainsKey(currencyType) == false)
                 _currencies.Add(currencyType, new Currency());
 
-            _currencies[currencyType].AddValue(value);
+            (_currencies[currencyType] as Currency)?.AddValue(value);
         }
     
         public bool TrySubValue(CurrencyType currencyType, float value)
@@ -25,13 +25,13 @@ namespace Homework.Wallet.Scripts.Wallet
             if (difference < 0)
                 return false;
             
-            _currencies[currencyType].SubValue(value);
+            (_currencies[currencyType] as Currency)?.SubValue(value);
             return true;
         }
 
         public bool TryGetValue(CurrencyType currencyType, out float value)
         {
-            if (TryGetCurrency(currencyType, out Currency currency) == false)
+            if (TryGetCurrency(currencyType, out IReadOnlyCurrency currency) == false)
             {
                 value = 0;
                 return false;
@@ -41,7 +41,7 @@ namespace Homework.Wallet.Scripts.Wallet
             return true;
         }
 
-        public bool TryGetCurrency(CurrencyType currencyType, out Currency currency)
+        public bool TryGetCurrency(CurrencyType currencyType, out IReadOnlyCurrency currency)
         {
             currency = null;
 

@@ -36,7 +36,7 @@ namespace Homework.Wallet.Scripts.Wallet.View
                 if (TryFindMappedCurrency(currency.Key, out CurrencyViewData viewData))
                 {
                     CurrencyView view = Instantiate(viewData.ViewPrefab, currenciesPanel.transform);
-                    Currency currentCurrency = GetCoinCurrency(viewData.CurrencyType);
+                    IReadOnlyCurrency currentCurrency = GetCoinCurrency(viewData.CurrencyType);
                     view.Initialize(currentCurrency);
                     _walletAudioView.Initialize(currentCurrency);
                 }
@@ -47,9 +47,9 @@ namespace Homework.Wallet.Scripts.Wallet.View
             }
         }
 
-        private Currency GetCoinCurrency(CurrencyType currencyType)
+        private IReadOnlyCurrency GetCoinCurrency(CurrencyType currencyType)
         {
-            if (_wallet.TryGetCurrency(currencyType, out Currency currency) == false)
+            if (_wallet.TryGetCurrency(currencyType, out IReadOnlyCurrency currency) == false)
                 Debug.LogError($"Coin Currency {currencyType} not found");
         
             return currency;

@@ -7,14 +7,14 @@ namespace Homework.Wallet.Scripts.Wallet.View
     {
         [SerializeField] private TMP_Text _currencyText;
 
-        private Currency _currency;
+        private IReadOnlyCurrency _currency;
 
         private void OnDestroy()
         {
             _currency.Changed -= UpdateValueText;
         }
 
-        public void Initialize(Currency currency)
+        public void Initialize(IReadOnlyCurrency currency)
         {
             _currency = currency;
             _currency.Changed += UpdateValueText;

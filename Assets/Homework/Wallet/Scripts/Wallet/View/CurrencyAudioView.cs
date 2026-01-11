@@ -9,11 +9,11 @@ namespace Homework.Wallet.Scripts.Wallet.View
     
         [SerializeField] private AudioSource _audioSource;
 
-        private Currency _currency;
+        private IReadOnlyCurrency _currency;
 
         private void OnDestroy() => _currency.Changed -= PlayAudio;
     
-        public void Initialize(Currency currency)
+        public void Initialize(IReadOnlyCurrency currency)
         {
             _currency = currency;
             _currency.Changed += PlayAudio;
