@@ -3,7 +3,7 @@ using Homework.Reactive;
 
 namespace Homework.Wallet.Scripts.Wallet
 {
-    public class Currency
+    public class Currency : IReadOnlyCurrency
     {
         public event Action<float, float> Changed
         {
@@ -12,28 +12,32 @@ namespace Homework.Wallet.Scripts.Wallet
         }
 
         private ReactiveVariable<float> _value;
-
-        public Currency(float value = 0) => _value = new ReactiveVariable<float>(value);
-
         public IReadOnlyReactiveVariable<float> ReactiveValue => _value;
 
+        public Currency(float value = 0) => _value = new ReactiveVariable<float>(value);
+        
         public float SetValue(float value)
         {
-            ThrowExceptionIfValueNotPositive(value);
+            if (value < 0)
+                throw new Exception($"value is invalid {value} < 0");
+            
             _value.Value = value;
             return _value.Value;
         }
 
         public float AddValue(float value)
         {
-            ThrowExceptionIfValueNotPositive(value);
+            if (value < 0)
+                throw new Exception($"value is invalid {value} < 0");
+            
             _value.Value += value;
             return _value.Value;
         }
 
         public float SubValue(float value)
         {
-            ThrowExceptionIfValueNotPositive(value);
+            if (value < 0)
+                throw new Exception($"value is invalid {value} < 0");
 
             float newValue = _value.Value - value;
 
@@ -43,12 +47,6 @@ namespace Homework.Wallet.Scripts.Wallet
                 _value.Value = newValue;
 
             return _value.Value;
-        }
-
-        private void ThrowExceptionIfValueNotPositive(float value)
-        {
-            if (value < 0)
-                throw new Exception($"value is invalid {value} < 0");
         }
     }
 }

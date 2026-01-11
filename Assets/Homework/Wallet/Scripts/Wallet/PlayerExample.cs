@@ -18,6 +18,13 @@ namespace Homework.Wallet.Scripts.Wallet
             _playerWallet.AddValue(CurrencyType.Energy, 10);
         
             _walletView.Initialize(_playerWallet);
+            
+            Debug.Log("Попробуем вычесть 20 монет. Если у нас только 10");
+            
+            if (_playerWallet.TrySubValue(CurrencyType.Coins, 20))
+                Debug.Log("Монет хватает и покупка получилась");
+            else
+                Debug.Log("Монет не хватает и покупка не получилась. Монеты не потрачены");
         }
 
         private void Update()

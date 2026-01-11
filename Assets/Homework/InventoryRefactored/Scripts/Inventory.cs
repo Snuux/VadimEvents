@@ -8,7 +8,7 @@ namespace Homework.InventoryRefactored.Scripts
     public class Inventory
     {
         private Dictionary<IReadOnlyItem, int> _items = new();
-
+        
         public int CurrentSize => _items.Sum(item => item.Value);
         public int MaxSize { get; private set; }
 

@@ -21,6 +21,10 @@ namespace Homework.Wallet.Scripts.Wallet
             if (_currencies.ContainsKey(currencyType) == false)
                 return false;
 
+            float difference = _currencies[currencyType].ReactiveValue.Value - value;
+            if (difference < 0)
+                return false;
+            
             _currencies[currencyType].SubValue(value);
             return true;
         }
